@@ -203,7 +203,12 @@ async function handleIncomingDm(igUserId: string, senderId: string, text: string
   }).eq("id", contact.id);
 
   if (ai.escalate) {
-    // Phase 6 adds Telegram; until then escalations are visible in Inbox via logs
-    console.warn(`ESCALATION: contact ${contact.id} — "${text.slice(0, 100)}"`);
+    // Surfaced in Console Dashboard/Inbox; Phase 6 adds Telegram notification
+    await sb.from("contacts").update({
+      escalated: true,
+      escalation_reason: ai.escalation_reason ?? "other",
+      escalated_at: new Date().toISOString(),
+      escalation_ack: false,
+    }).eq("id", contact.id);
   }
 }

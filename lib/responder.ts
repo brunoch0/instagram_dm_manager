@@ -32,6 +32,7 @@ export interface AiResponse {
   should_send_link: boolean;
   link: string | null;
   escalate: boolean;
+  escalation_reason: "b2b" | "complaint" | "policy" | "other" | null;
   conversation_status: "active" | "converted" | "ended";
 }
 
@@ -44,9 +45,14 @@ const RESPONSE_SCHEMA = {
     should_send_link: { type: "boolean" },
     link: { type: ["string", "null"] },
     escalate: { type: "boolean", description: "true for B2B inquiries, complaints, or unclear judgment calls" },
+    escalation_reason: {
+      type: ["string", "null"],
+      enum: ["b2b", "complaint", "policy", "other", null],
+      description: "reason tag when escalate=true",
+    },
     conversation_status: { type: "string", enum: ["active", "converted", "ended"] },
   },
-  required: ["selected_funnel", "reply", "language", "should_send_link", "link", "escalate", "conversation_status"],
+  required: ["selected_funnel", "reply", "language", "should_send_link", "link", "escalate", "escalation_reason", "conversation_status"],
   additionalProperties: false,
 } as const;
 
