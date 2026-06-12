@@ -1,0 +1,16 @@
+# Vercel Hobby plan limits crons to daily — this runs the publisher every 5 min instead.
+# Secrets: CRON_URL (https://<prod>/api/cron/publish), CRON_SECRET (matches Vercel env)
+name: publish-cron
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+jobs:
+  tick:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger publish cron
+        run: |
+          curl -sf -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" "${{ secrets.CRON_URL }}" || exit 1
